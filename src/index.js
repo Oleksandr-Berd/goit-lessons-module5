@@ -7,8 +7,10 @@ import { BrowserRouter } from 'react-router-dom';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <PaginationProvider>
-      <App />
-    </PaginationProvider>
+    <BrowserRouter basename="goit-lessons-module5">
+      <PaginationProvider>
+        <App />
+      </PaginationProvider>
+    </BrowserRouter>
   </React.StrictMode>
 );

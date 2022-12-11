@@ -9,10 +9,11 @@ import { Post } from './Post/Post';
 import * as SC from './Posts.styled.js';
 import { usePaginationContext } from 'components/context/pagination';
 import { Pagination } from 'components/Pagination/Pagination';
+import { useSearchParams } from 'react-router-dom';
 
 export const Posts = () => {
-  const params = new URLSearchParams(window.location.search);
-  const [query, setQuery] = useState(params.get('query'));
+  let [searchParams, setSearchParams] = useSearchParams();
+  const [query, setQuery] = useState(searchParams.get('query') ?? '');
   const [loading, setLoading] = useState(false);
   const [hasPostsError, setHasPostsError] = useState(false);
   const { page, setPage, setTotalPages } = usePaginationContext();
@@ -35,9 +36,7 @@ export const Posts = () => {
   };
 
   useWatch(() => {
-    const params = new URLSearchParams(window.location.search);
-    params.set('query', query);
-    window.history.replaceState(null, null, `?${params.toString()}`);
+    setSearchParams({ query });
   }, [query]);
 
   useEffect(() => {
@@ -56,8 +55,8 @@ export const Posts = () => {
         {isLoading && <Loader />}
         {error && <>There was an error</>}
         <SC.Posts>
-          {articles?.hits?.map(({ title, points, objectID }) => (
-            <Post title={title} likes={points} key={objectID} />
+          {articles?.hits?.map(({ title = '', points, objectID }) => (
+            <Post id={objectID} key={objectID} title={title} likes={points} />
           ))}
         </SC.Posts>
         <Pagination page={1} />
